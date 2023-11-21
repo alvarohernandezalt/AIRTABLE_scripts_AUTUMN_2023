@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 
 set "folderPath=%~dp0"
 
-for %%F in ("%folderPath%* (1).*") do (
+for %%F in ("%folderPath%* (*).*") do (
     set "originalFile=%%~dpnF"
     set "originalFile=!originalFile: (1)=!"
 
@@ -30,4 +30,5 @@ for %%F in ("%folderPath%* (1).*") do (
 )
 
 endlocal
-pause
+
+exit
