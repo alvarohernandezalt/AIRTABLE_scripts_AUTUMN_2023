@@ -1,4 +1,6 @@
 
+// This script updates the DIRECCION column in the Airtable table 'YourTableName' by inserting the value of the MUNICIPIO column after the first "-" character in the DIRECCION value.
+
 // Get the table from Airtable
 let table = base.getTable('YourTableName');
 
