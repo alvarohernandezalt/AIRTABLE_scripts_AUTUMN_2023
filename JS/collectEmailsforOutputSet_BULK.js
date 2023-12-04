@@ -11,22 +11,34 @@ let queryResult = await table.selectRecordsAsync({
     fields: ['envioRealizadoString'] // Replace with your actual field name
 });
 let record = queryResult.records[0];
-let envioRealizadoA = record ? record.getCellValue('envioRealizadoString') : null;
+let envioRealizadoString = record ? record.getCellValue('envioRealizadoString') : null;
 
-if (envioRealizadoA && envioRealizadoA.includes('ADMINISTRADOR')) {
-    let recogidasTable = base.getTable('HOJA_RECOGIDA_PRESUPUESTOS');
-    let recogidasQueryResult = await recogidasTable.selectRecordsAsync({
-        filterByFormula: `{ID} = '${recogidasID}'`,
-        fields: ['@ADMOR'] // Replace with your actual field name
-    });
-    let emailRecord = recogidasQueryResult.records[0];
-    let email = emailRecord ? emailRecord.getCellValue('@ADMOR') : null;
+let roleFieldMapping = {
+    'ADMINISTRADOR': '@ADMOR',
+    'PROPIEDAD': '@PPDAD',
+    'ARQUITECTO': '@ARQ',
+    'PROJECT MANAGER': '@PROJECTM',
+    'REPRESENTANTE': '@RL'
+};
 
-    if (email) {
-        output.set('correosContactos', email);
+let rolesToSearch = envioRealizadoString ? envioRealizadoString.split(',').map(role => role.trim()) : [];
+
+for (let role of rolesToSearch) {
+    if (role in roleFieldMapping) {
+        let recogidasTable = base.getTable('HOJA_RECOGIDA_PRESUPUESTOS');
+        let recogidasQueryResult = await recogidasTable.selectRecordsAsync({
+            filterByFormula: `{ID} = '${recogidasID}'`,
+            fields: [roleFieldMapping[role]] // Replace with your actual field name
+        });
+        let emailRecord = recogidasQueryResult.records[0];
+        let email = emailRecord ? emailRecord.getCellValue(roleFieldMapping[role]) : null;
+
+        if (email) {
+            output.set('correosContactos', email);
+        } else {
+            console.log(`No email found for the given recogidasID with role ${role}`);
+        }
     } else {
-        console.log('No email found for the given recogidasID');
+        console.log(`Role "${role}" is not in the roleFieldMapping object`);
     }
-} else {
-    console.log('ENVIO_REALIZADO_A does not contain "ADMINISTRADOR" or the record does not exist');
 }
