@@ -12,11 +12,12 @@ let query = {
 
 table.selectRecordsAsync(query).then(result => {
     let matchingRecords = result.records.filter(record => record.getCellValue('ROWID').includes(obraRowId));
-    console.log(matchingRecords[0].id)});
+    console.log(matchingRecords[0].id);
+    output.set('newObraId', matchingRecords[0].id);
+});
 
 // Convert certificadorRowId to a string with comma separation
 let certificadorRowIdString = certificadorRowId.join(',');
 
 output.set('certificadorRowIdString', certificadorRowIdString);
-output.set('newObraId', matchingRecords[0].id )
 
