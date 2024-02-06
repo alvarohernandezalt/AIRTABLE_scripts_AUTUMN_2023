@@ -29,7 +29,7 @@ for (let record of queryResult.records) {
         let monthRecord = monthsQueryResult.records.find(record => record.name === monthName);
         if (monthRecord) {
             await table.updateRecordAsync(record, {
-                'pivotLookUp': [{id: monthRecord.id}]
+                'PivotLookUp2023': [{id: monthRecord.id}]
             });
         }
     }
